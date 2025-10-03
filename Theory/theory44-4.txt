@@ -1,0 +1,62 @@
+44-4 Use Custom hook to reduce duplication of the code
+========================================================
+ControlledField.jsx---->>>
+line -4
+const [email, setEmail] =useState('');
+
+
+
+line--->>18
+ const handleEmailChange = (e) =>{
+        setEmail(e.target.value);
+        setPassword(e.target.value);
+    }
+
+line--->> 39
+
+<input type="email" onChange={handleEmailChange} defaultValue={email} name="email" id="" placeholder='Your Email' required/> <br />
+============>>>UserInputField.jsx
+import React, { useState } from 'react';
+
+const UseInputField = (defaultValue) => {
+    const [fieldValue, setFieldValue] = useState(defaultValue);
+
+    const handleFieldOnChange = (e) =>{
+        setFieldValue(e.target.value);
+    }
+    
+    return [fieldValue,handleFieldOnChange]
+};
+
+export default UseInputField;
+=============>>>HookForm.jsx
+import React from 'react';
+import UseInputField from '../Hooks/UseInputField';
+
+const HookForm = () => {
+
+    const [name,nameOnChange] = UseInputField();
+    const [email, emailOnChange] = UseInputField();
+    const [password, passwordOnChange] = UseInputField();
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // console.log("Submit, name, email"); wrong process
+        console.log("Submit:", name, email,password);
+    }
+    return (
+        <div>
+            <form onSubmit={handleSubmit} action="">
+                <input defaultValue={name} type="text" onChange={nameOnChange} placeholder='Your Name'/> <br />
+                <input type="email" onChange={emailOnChange} name="" id="" placeholder='Your Email'/> <br />
+                <input type="password" name="" onChange={passwordOnChange} placeholder='Your Password'/> <br />
+                <input type="submit" value="Submit" />
+            </form>
+            
+
+        </div>
+    );
+};
+
+export default HookForm;
