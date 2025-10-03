@@ -1,0 +1,156 @@
+44-9 Explore more context API and module summary
+======================================================
+Create Context
+>> Create a context using createContext with default value.
+>> Make sure you export the context to be used in other files
+------------->>>
+FamilyTree.jsx---> 
+line-7
+export const MoneyContext = createContext(0);
+
+line --25
+<MoneyContext>
+                <AssetContext.Provider value={newAsset}>
+                    <Grandpa asset={asset}></Grandpa>
+                </AssetContext.Provider>
+            </MoneyContext>
+
+line---> 11
+const [money, setMoney] = useState(0);
+line -->>>25
+<MoneyContext value={[money, setMoney]}>
+
+line--> 19
+<h4>Total Family money : {money}</h4>
+---->>
+Brother.jsx--->
+line-5
+ const [money, setMoney] = use(MoneyContext);
+line---> 10
+<div>
+            <h3>Brother</h3>
+            <button onClick={()=>setMoney(money + 1000)}>Add 1000 Tk</button>
+        </div>
+----->>
+6.00 Min 
+Friend.jsx--->>
+line -6
+<h3>Friend</h3>
+<p>Family Got : {money}</p>
+
+Cousin.jsx--->>>
+line--15
+{
+    name === 'Sonia' && <Friend></Friend>
+}
+
+
+Aunt.jsx--->>>
+   const [money, setMoney] = use(MoneyContext);
+
+    const handleAddMoney = () =>{
+        setMoney(money + 5000);
+    }
+
+    <button onClick={handleAddMoney}>Add 5000 Tk</button>
+
+    ==================>>>FamilyTree.jsx
+    import React, { createContext, useState } from 'react';
+import Grandpa from './Grandpa';
+import './FamilyTree.css'
+
+export const AssetContext = createContext('');
+// const newAsset = 'gold';
+export const MoneyContext = createContext(0);
+
+
+const FamilyTree = () => {
+    const [money, setMoney] = useState(0);
+
+    const asset = 'diamond';
+    const newAsset = 'gold';
+
+    return (
+        <div className='family-tree'>
+            <h2>Family Tree</h2>
+            <h4>Total Family money : {money}</h4>
+            {/* <Grandpa asset={asset}></Grandpa> */}
+            
+            {/* <AssetContext.Provider value={newAsset}>
+                <Grandpa asset={asset}></Grandpa>
+            </AssetContext.Provider> */}
+
+            <MoneyContext value={[money, setMoney]}>
+                <AssetContext.Provider value={newAsset}>
+                    <Grandpa asset={asset}></Grandpa>
+                </AssetContext.Provider>
+            </MoneyContext>
+
+        </div>
+    );
+};
+
+export default FamilyTree;
+
+
+==========================>>> Brother.jsx
+import React, { use } from 'react';
+import { MoneyContext } from './FamilyTree';
+
+const Brother = () => {
+    const [money, setMoney] = use(MoneyContext);
+
+    return (
+        <div>
+            <h3>Brother</h3>
+            <button onClick={()=>setMoney(money + 1000)}>Add 1000 Tk</button>
+        </div>
+    );
+};
+
+export default Brother;
+=========================>>>Friend.jsx
+import React, { use } from 'react';
+import { MoneyContext } from './FamilyTree';
+
+const Friend = () => {
+
+    const [money, setMoney]= use(MoneyContext);
+    
+    return (
+        <div>
+            <h3>Friend</h3>
+            <p>Family Got : {money}</p>
+        </div>
+    );
+};
+
+export default Friend;
+===================Aunt.jsx
+import React, { use } from 'react';
+import Cousin from './Cousin';
+import { MoneyContext } from './FamilyTree';
+
+const Aunt = ({asset}) => {
+
+    const [money, setMoney] = use(MoneyContext);
+
+    const handleAddMoney = () =>{
+        setMoney(money + 5000);
+    }
+
+    return (
+        <div>
+            <h3>Aunt</h3>
+            <section className='flex'>
+                <Cousin asset={asset} name='Upoma'></Cousin>
+                <Cousin name='Sonia'></Cousin>
+                <Cousin name='Lamia'></Cousin>
+
+                <button onClick={handleAddMoney}>Add 5000 Tk</button>
+            </section>
+        </div>
+    );
+};
+
+export default Aunt;
